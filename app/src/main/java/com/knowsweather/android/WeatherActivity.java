@@ -1,5 +1,6 @@
 package com.knowsweather.android;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.knowsweather.android.gson.Forecast;
 import com.knowsweather.android.gson.Weather;
+import com.knowsweather.android.service.AutoUpdateService;
 import com.knowsweather.android.util.HttpUtil;
 import com.knowsweather.android.util.Utility;
 
@@ -230,5 +232,7 @@ public class WeatherActivity extends AppCompatActivity {
         carWashText.setText(carWash);
         sportText.setText(sport);
         weatherLayout.setVisibility(View.VISIBLE);
+        Intent intent = new Intent(this, AutoUpdateService.class);
+        startService(intent);
     }
 }
