@@ -37,6 +37,8 @@ import okhttp3.Response;
 
 public class ChooseAreaFragment extends Fragment {
 
+    private static final String TAG = "ChooseAreaFragment";
+
     public static final int LEVEL_PROVINCE = 0;
 
     public static final int LEVEL_CITY = 1;
@@ -111,10 +113,17 @@ public class ChooseAreaFragment extends Fragment {
                     queryCounties();
                 } else if (currentLevel == LEVEL_COUNTY) {
                     String weatherId = countyList.get(position).getWeatherId();
-                    Intent intent = new Intent(getActivity(), WeatherActivity.class);
-                    intent.putExtra("weather_id", weatherId);
-                    startActivity(intent);
-                    getActivity().finish();
+                    if (getActivity() instanceof MainActivity) {
+                        Intent intent = new Intent(getActivity(), WeatherActivity.class);
+                        intent.putExtra("weather_id", weatherId);
+                        startActivity(intent);
+                        getActivity().finish();
+                    } else if (getActivity() instanceof WeatherActivity) {
+                        WeatherActivity activity = (WeatherActivity) getActivity();
+                        activity.drawerLayout.closeDrawers();
+                        activity.swipeRefresh.setRefreshing(true);
+                        activity.requestWeather(weatherId);
+                    }
                 }
             }
         });
@@ -176,7 +185,7 @@ public class ChooseAreaFragment extends Fragment {
     }
 
     /**
-     * 查询选中市内所有的省，优先从数据库查询，没有则去服务器上查询
+     * 查询选中市内所有的县，优先从数据库查询，没有则去服务器上查询
      */
     private void queryCounties() {
         titleText.setText(selectedCity.getCityName());
